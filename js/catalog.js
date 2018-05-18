@@ -1,6 +1,16 @@
-/* global Product, Cart */
+ /* global Product, Cart */
 
 'use strict';
+
+var orderArray = [];
+
+// Create constructor to store cart items
+function Cart (name, quantity) {
+  this.name = name;
+  this.quantity = quantity;
+  orderArray.push(this);
+}
+
 
 // On screen load, we call this method to put all of the busmall options
 // (the things in the Product.allProducts array) into the drop down list.
@@ -8,11 +18,15 @@ function populateForm() {
 
   //TODO: Add an <option> tag inside the form's select for each product
   var selectElement = document.getElementById('items');
-  for (var i in Product.allProducts) {
 
+  for (var i in allProducts) {
+    var newOption = document.createElement('option');
+    newOption.setAttribute('value', allProducts[i].name);
+    newOption.text = allProducts[i].name;
+    selectElement.appendChild(newOption);
+    // console.log(newOption);
   }
-
-}
+};
 
 // When someone submits the form, we need to add the selected item to the cart
 // object, save the whole thing back to local storage and update the screen
@@ -20,25 +34,29 @@ function populateForm() {
 function handleSubmit(event) {
 
   // TODO: Prevent the page from reloading
-
+  event.preventDefault();
   // Do all the things ...
   addSelectedItemToCart();
   saveCartToLocalStorage();
   updateCounter();
   updateCartPreview();
 
-}
+};
 
 // TODO: Add the selected item and quantity to the cart
 function addSelectedItemToCart() {
   // TODO: suss out the item picked from the select list
+  var productName = event.target['1'].value;
   // TODO: get the quantity
+  var itemQuantity = event.target['2'].value;
   // TODO: using those, create a new Cart item instance
+  new Cart (productName, itemQuantity);
+  console.log(orderArray);
 }
 
 // TODO: Save the contents of the cart to Local Storage
 function saveCartToLocalStorage() {
-
+  localStorage.setItem('orderArray', JSON.stringify(orderArray));
 }
 
 // TODO: Update the cart count in the header nav with the number of items in the Cart
@@ -48,6 +66,10 @@ function updateCounter() {}
 function updateCartPreview() {
   // TODO: Get the item and quantity from the form
   // TODO: Add a new element to the cartContents div with that information
+    // var optEl = document.createElement('option');
+    // optEl.textContent = allProducts.name + '' + quantity;
+    // orderArray.appendChild(optEl);
+    // console.log(optEl);
 }
 
 // Set up the "submit" event listener on the form.
@@ -59,3 +81,4 @@ catalogForm.addEventListener('submit', handleSubmit);
 // Before anything else of value can happen, we need to fill in the select
 // drop down list in the form.
 populateForm();
+
